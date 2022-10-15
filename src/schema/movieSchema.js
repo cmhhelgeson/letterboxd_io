@@ -13,6 +13,7 @@ import { parseOriginalLanguage } from "./schemaUtils.ts";
 import { LanguageType } from "./languageSchema.ts";
 
 
+
 export const MovieType = new GraphQLObjectType({
     name: "Movie",
     description: "Query movie information.",
@@ -35,6 +36,14 @@ export const MovieType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: movie => movie.imdb_id
         },
+        originalLanguage: {
+            type: GraphQLString,
+            resolve: movie => parseOriginalLanguage(movie.original_language)
+        },
+        originalLanguageISO: {
+            type: GraphQLString,
+            resolve: movie => movie.original_language
+        },
         originalTitle: {
             type: GraphQLString,
             resolve: movie => movie.original_title,
@@ -46,14 +55,7 @@ export const MovieType = new GraphQLObjectType({
             resolve: movie => movie.poster_path
         },
         runtime: {type: GraphQLInt},
-        originalLanguage: {
-            type: GraphQLString,
-            resolve: movie => parseOriginalLanguage(movie.original_language)
-        },
-        originalLanguageISO: {
-            type: GraphQLString,
-            resolve: movie => movie.original_language
-        },
+        
         spokenLanguages: {
             type: new GraphQLList(LanguageType()),
             resolve: movie => movie.spoken_languages
