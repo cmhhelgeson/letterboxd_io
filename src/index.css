@@ -5,24 +5,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #14181c url(../src/content-bg.0d9a0f0f.png) 0 -1px repeat-x
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
-
-section {
-  display: block;
-}
-
-div {
-  border: 0;
-  font-family: inherit;
-  font-size: 100%;
-  font-weight: inherit;
-  outline: 0;
-  padding: 0;
-  vertical-align: baseline;
 }
