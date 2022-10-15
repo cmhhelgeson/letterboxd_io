@@ -9,8 +9,9 @@ import {
 } from "graphql";
 
 import { GenreType } from "./genreSchema.js";
-import { parseOriginalLanguage } from "./schemaUtils.ts";
-import { LanguageType } from "./languageSchema.ts";
+import { parseOriginalLanguage } from "./schemaUtils.js";
+import { LanguageType } from "./languageSchema.js";
+import { CompanyType } from "./companySchema.js";
 
 
 
@@ -54,8 +55,11 @@ export const MovieType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: movie => movie.poster_path
         },
+        productionCompanies: {
+            type: new GraphQLList(CompanyType()),
+            resolve: movie => movie.production_companies
+        },
         runtime: {type: GraphQLInt},
-        
         spokenLanguages: {
             type: new GraphQLList(LanguageType()),
             resolve: movie => movie.spoken_languages

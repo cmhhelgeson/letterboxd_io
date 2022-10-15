@@ -7,7 +7,7 @@ import {
 
 
 
-type TMDBLanguageType = {
+/* type TMDBLanguageType = {
     iso_639_1?: string,
     english_name?: string,
     name?: string,
@@ -20,7 +20,7 @@ type LanguageFieldsType = () => ThunkObjMap<GraphQLFieldConfig<
     TMDBLanguageType,
     TMDBLanguageType,
     TMDBLanguageType
->>
+>> */
 
 /*type MovieLanguageFieldsType = () => ThunkObjMap<GraphQLFieldConfig<
     Omit<TMDBLanguageType, "english_name">, 
@@ -51,23 +51,23 @@ export const Language = new GraphQLObjectType({
 }) */
 
 
-export const LanguageType = (withoutKeys?: LanguageTypeFields[]) => {
-    let name: string
-    let description: string
-    let languageFields: LanguageFieldsType
+export const LanguageType = (withoutKeys) => {
+    let name
+    let description
+    let languageFields;
 
-    let tempFields: any = {
+    let tempFields = {
         iso6391: {
             type: GraphQLString,
-            resolve: (language: TMDBLanguageType) => language.iso_639_1
+            resolve: (language) => language.iso_639_1
         },
         englishName: {
             type: GraphQLString,
-            resolve: (language: TMDBLanguageType) => language.english_name
+            resolve: (language) => language.english_name
         },
         name: {
             type: GraphQLString,
-            resolve: (language: TMDBLanguageType) => language.name
+            resolve: (language) => language.name
         },
     }
     //Normal Language Type
