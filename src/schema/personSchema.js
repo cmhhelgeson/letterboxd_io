@@ -7,6 +7,7 @@ import {
     GraphQLBoolean,
     GraphQLUnionType,
     GraphQLScalarType,
+    GraphQLEnumType,
 } from "graphql"
 
 import { GenderType } from "./genderSchema.js";
@@ -24,6 +25,14 @@ export const getPersonMovieCredits = (id) => {
         return res.data;
     })
 }
+
+const SortEnum = new GraphQLEnumType({
+    name: "Sort",
+    values: {
+        ASC: {value: 0},
+        DESC: {value: 1}
+    }
+})
 
 
 export const CastMovieCreditType = new GraphQLObjectType({
@@ -137,6 +146,17 @@ export const PersonMovieCreditType = new GraphQLObjectType({
         cast: {type: new GraphQLList(CastMovieCreditType)},
         crew: {type: new GraphQLList(CrewMovieCreditType)}
     })
+})
+
+
+export const TempSortType = new GraphQLObjectType({
+    name: "TempSortType",
+    description: "Bleh",
+    fields: () => ({
+        order: SortEnum,
+        
+    })
+
 })
 
 export const PersonType = new GraphQLObjectType({
