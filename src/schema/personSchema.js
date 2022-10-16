@@ -7,13 +7,14 @@ import {
     GraphQLBoolean,
     GraphQLUnionType,
     GraphQLScalarType,
-    
-
 } from "graphql"
+
+import { GenderType } from "./genderSchema.js";
 
 import { MovieType } from "./movieSchema.js"
 import axios from "axios"
 import { GenreType } from "./genreSchema.js";
+
 
 
 export const getPersonMovieCredits = (id) => {
@@ -133,8 +134,8 @@ export const PersonMovieCreditType = new GraphQLObjectType({
     description: "Query a person's movie credits",
     fields: () => ({
         id: {type: GraphQLInt},
-        cast: {type: CastMovieCreditType},
-        crew: {type: CrewMovieCreditType}
+        cast: {type: new GraphQLList(CastMovieCreditType)},
+        crew: {type: new GraphQLList(CrewMovieCreditType)}
     })
 })
 
@@ -154,7 +155,7 @@ export const PersonType = new GraphQLObjectType({
             type: new GraphQLList(GraphQLString),
             resolve: person => person.also_known_as
         },
-        gender: {type: GraphQLInt},
+        gender: {type: GenderType},
         biography: {type: GraphQLString},
         popularity: {type: GraphQLFloat},
         birthPlace: {
@@ -174,9 +175,32 @@ export const PersonType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: person => person.homepage ? person.homepage : null
         },
-        credits: {
+        movieCredits: {
             type: PersonMovieCreditType,
-            resolve: person => person.credits
+            args: {
+                jobFilter: {type: GraphQLString},
+                limit: {type: GraphQLInt},
+            },
+            resolve: (person, args) => {
+                const {jobFilter, limit} = args;
+                console.log(jobFilter)
+                const url = `${process.env.TMDB_V3_ROOT_URL}person/${person.id}/movie_credits?api_key=${process.env.TMDB_V3_API_KEY}`;
+                console.log(url);
+                return axios.get(url).then((res) => {
+                    console.log(res.data);
+                    if (jobFilter) {
+                        const filteredCrew = res.data.crew.filter(
+                            credit => credit.job === jobFilter
+                        );
+                        const newLimit = limit ? limit : filteredCrew.length;
+                        return {
+                            id: res.data.id,
+                            cast: res.data.cast,
+                            crew: filteredCrew.slice(0, newLimit)
+                        }
+                    }
+                })
+            }
         }
     })
 })

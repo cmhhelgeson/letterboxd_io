@@ -6,7 +6,8 @@ import {
     GraphQLInt,
     GraphQLBoolean,
     GraphQLFloat,
-    GraphQLList
+    GraphQLList,
+    GraphQLEnumType
 } from "graphql";
 
 import { MovieType } from "./movieSchema.js";
@@ -85,11 +86,17 @@ const RootQuery = new GraphQLObjectType({
             args: {id: {type: GraphQLInt}}, 
             resolve(_, args) {
                 return axios.get(`${url}person/${args.id}?api_key=${API_KEY}`).then((res) => {
-                    let person = res.data;
-                    person.credits = getPersonMovieCredits(person.id)
-                    return person;
+                    return res.data;
                 })
             }
+        },
+        popular: {
+            type: PersonType, 
+            args: {
+                startPage: {type: GraphQLInt},
+                totalPages: {type: GraphQLInt}
+            }
+
         }
     }
 })
