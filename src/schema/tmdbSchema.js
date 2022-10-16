@@ -50,14 +50,14 @@ const RootQuery = new GraphQLObjectType({
             args: {
                 startPage: {type: GraphQLInt},
                 totalPages: {type: GraphQLInt},
-                jobSort: {type: GraphQLString}
+                knownForFilter: {type: GraphQLString}
             },
             resolve(_, args) {
-                const {startPage, totalPages} = args;
+                const {startPage, totalPages, knownForFilter} = args;
                 const pageArr = Array.from(
-                    {length: totalPages}, (_, i) => i + 1
+                    {length: totalPages}, (_, i) => i + startPage
                 );
-                const resultsArr = [];
+                let resultsArr = [];
                 console.log(pageArr);
                 return Promise.all(
                     pageArr.map(pageId => 
@@ -68,6 +68,14 @@ const RootQuery = new GraphQLObjectType({
                         })
                     )
                 ).then((res) => {
+                    if (knownForFilter) {
+                        console.log(knownForFilter);
+                        console.log(resultsArr);
+                        resultsArr = resultsArr.filter(
+                            result => result.knownFor === knownForFilter || result.known_for_department === knownForFilter
+                        )
+                        console.log(resultsArr);
+                    }
                     return resultsArr;
                 })
             }
