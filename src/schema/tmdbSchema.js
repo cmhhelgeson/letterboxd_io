@@ -46,22 +46,29 @@ const RootQuery = new GraphQLObjectType({
             }
         },
         popular: {
-            type: PersonType, 
+            type: new GraphQLList(PersonType), 
             args: {
                 startPage: {type: GraphQLInt},
-                totalPages: {type: GraphQLInt}
+                totalPages: {type: GraphQLInt},
+                jobSort: {type: GraphQLString}
             },
             resolve(_, args) {
                 const {startPage, totalPages} = args;
                 const pageArr = Array.from(
                     {length: totalPages}, (_, i) => i + 1
                 );
+                const resultsArr = [];
+                console.log(pageArr);
                 return Promise.all(
                     pageArr.map(pageId => 
-                        axios.get(`${url}person/${args.id}?api_key=${API_KEY}&page=${pageId}`)
+                        axios.get(`${url}person/popular?api_key=${API_KEY}&page=${pageId}`).then((res) => {
+                            resultsArr.push(...res.data.results);
+                        }).catch(e => {
+                            console.log(e.message);
+                        })
                     )
-                ).then((promises) => {
-                    
+                ).then((res) => {
+                    return resultsArr;
                 })
             }
         }
