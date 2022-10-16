@@ -13,6 +13,7 @@ import { MovieType } from "./movieSchema.js";
 
 
 import dotenv from "dotenv"
+import { getPersonMovieCredits, PersonType } from "./personSchema.js";
 
 dotenv.config();
 
@@ -35,12 +36,12 @@ const url = process.env.TMDB_V3_ROOT_URL
     }
 } */
 
-const getPersonMovieCredits = (id) => {
+/* const getPersonMovieCredits = (id) => {
     axios.get(`${url}person/${id}/movie_credits?api_key=${API_KEY}`).then((res) => {
         console.log(res.data.cast);
         return [...res.data.cast, ...res.data.crew];
     })
-}
+} */
 
 
 /*const PopularPeopleType = new GraphQLObjectType({
@@ -67,13 +68,6 @@ const getPersonMovieCredits = (id) => {
 }) */
 
 
-
-
-
-
-
-
-
 const RootQuery = new GraphQLObjectType({
     name: 'RootQuery',
     fields: {
@@ -86,6 +80,17 @@ const RootQuery = new GraphQLObjectType({
                 })
             }
         },
+        person: {
+            type: PersonType,
+            args: {id: {type: GraphQLInt}}, 
+            resolve(_, args) {
+                return axios.get(`${url}person/${args.id}?api_key=${API_KEY}`).then((res) => {
+                    let person = res.data;
+                    person.credits = getPersonMovieCredits(person.id)
+                    return person;
+                })
+            }
+        }
     }
 })
 
